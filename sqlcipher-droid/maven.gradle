@@ -1,0 +1,23 @@
+apply plugin: 'maven'
+
+import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
+
+artifacts{
+    archives new DefaultPublishArtifact("sqlcipher-droid", "aar", "aar", null, new Date(), new File("build/classes.aar"))
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        name = 'mavenCentralReleaseDeployer'
+        repository(url: "http://127.0.0.1:8080/nexus/content/repositories/sqlcipher") {
+            authentication(userName: "eagle", password: "eagle")
+        }
+        addFilter("sqlcipher-droid") {artifact, file ->
+            artifact.name == "sqlcipher-droid"
+        }
+        pom("sqlcipher-droid").packaging = 'aar'
+        pom("sqlcipher-droid").groupId = "cn.mutils.app"
+        pom("sqlcipher-droid").artifactId = "sqlcipher-droid"
+        pom("sqlcipher-droid").version = "3.5.4.1"
+    }
+}
