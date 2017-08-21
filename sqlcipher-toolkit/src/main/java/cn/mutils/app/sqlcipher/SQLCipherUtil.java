@@ -43,21 +43,37 @@ public class SQLCipherUtil {
             cipherTextFile.delete();
         }
         ensureLoadLibs(context);
+        SQLiteDatabase plainTextDB = null;
         SQLiteDatabase cipherTextDB = SQLiteDatabase.openOrCreateDatabase(
                 cipherTextFile.getAbsolutePath(), password, null);
         cipherTextDB.close();
-        SQLiteDatabase plainTextDB = SQLiteDatabase.openDatabase(plainTextFile.getAbsolutePath(),
-                "", null, SQLiteDatabase.OPEN_READWRITE);
-        plainTextDB.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s';",
-                cipherTextFile.getAbsolutePath(), password));
-        plainTextDB.rawExecSQL("SELECT sqlcipher_export('encrypted')");
-        plainTextDB.rawExecSQL("DETACH DATABASE encrypted;");
-        int version = plainTextDB.getVersion();
-        plainTextDB.close();
-        cipherTextDB = SQLiteDatabase.openDatabase(cipherTextFile.getAbsolutePath(),
-                password, null, SQLiteDatabase.OPEN_READWRITE);
-        cipherTextDB.setVersion(version);
-        cipherTextDB.close();
+        try {
+            plainTextDB = SQLiteDatabase.openDatabase(plainTextFile.getAbsolutePath(),
+                    "", null, SQLiteDatabase.OPEN_READWRITE);
+            plainTextDB.rawExecSQL(String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s';",
+                    cipherTextFile.getAbsolutePath(), password));
+            plainTextDB.rawExecSQL("SELECT sqlcipher_export('encrypted')");
+            plainTextDB.rawExecSQL("DETACH DATABASE encrypted;");
+            int version = plainTextDB.getVersion();
+            cipherTextDB = SQLiteDatabase.openDatabase(cipherTextFile.getAbsolutePath(),
+                    password, null, SQLiteDatabase.OPEN_READWRITE);
+            cipherTextDB.setVersion(version);
+        } finally {
+            if (plainTextDB != null) {
+                try {
+                    plainTextDB.close();
+                } catch (Throwable e) {
+                    // close catch
+                }
+            }
+            if (cipherTextDB != null) {
+                try {
+                    cipherTextDB.close();
+                } catch (Throwable e) {
+                    // close catch
+                }
+            }
+        }
         if (isSameDBName) {
             plainTextFile.delete();
             cipherTextFile.renameTo(plainTextFile);
