@@ -101,6 +101,18 @@ public abstract class DatabaseOpenHelper extends SQLiteOpenHelper {
         // Do nothing by default
     }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onDowngrade(wrap(db), oldVersion, newVersion);
+    }
+
+    /**
+     * Override this if you do not want to depend on {@link SQLiteDatabase}.
+     */
+    public void onDowngrade(Database db, int oldVersion, int newVersion) {
+        // Do nothing by default
+    }
+
     /**
      * Delegates to {@link #onOpen(Database)}, which uses greenDAO's database abstraction.
      */
@@ -183,6 +195,11 @@ public abstract class DatabaseOpenHelper extends SQLiteOpenHelper {
         @Override
         public void onUpgrade(net.sqlcipher.database.SQLiteDatabase db, int oldVersion, int newVersion) {
             DatabaseOpenHelper.this.onUpgrade(wrap(db), oldVersion, newVersion);
+        }
+
+        @Override
+        public void onDowngrade(net.sqlcipher.database.SQLiteDatabase db, int oldVersion, int newVersion) {
+            DatabaseOpenHelper.this.onDowngrade(wrap(db), oldVersion, newVersion);
         }
 
         @Override

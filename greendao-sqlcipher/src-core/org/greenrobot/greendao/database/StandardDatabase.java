@@ -16,9 +16,12 @@
 
 package org.greenrobot.greendao.database;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.Locale;
 
 public class StandardDatabase implements Database {
     private final SQLiteDatabase delegate;
@@ -84,5 +87,106 @@ public class StandardDatabase implements Database {
 
     public SQLiteDatabase getSQLiteDatabase() {
         return delegate;
+    }
+
+    public int update(String table, ContentValues values, String whereClause, String[] whereArgs) {
+        return delegate.update(table, values, whereClause, whereArgs);
+    }
+
+    public int updateWithOnConflict(String table, ContentValues values,
+                                    String whereClause, String[] whereArgs, int conflictAlgorithm) {
+        return delegate.updateWithOnConflict(table, values, whereClause, whereArgs, conflictAlgorithm);
+    }
+
+    public boolean isReadOnly() {
+        return delegate.isReadOnly();
+    }
+
+    public void yieldIfContendedSafely() {
+        delegate.yieldIfContendedSafely();
+    }
+
+    public boolean yieldIfContendedSafely(long sleepAfterYieldDelay) {
+        return delegate.yieldIfContendedSafely(sleepAfterYieldDelay);
+    }
+
+    public long getMaximumSize() {
+        return delegate.getMaximumSize();
+    }
+
+    public long setMaximumSize(long numBytes) {
+        return delegate.setMaximumSize(numBytes);
+    }
+
+    public long getPageSize() {
+        return delegate.getPageSize();
+    }
+
+    public void setPageSize(long numBytes) {
+        delegate.setPageSize(numBytes);
+    }
+
+    public Cursor query(boolean distinct, String table, String[] columns,
+                        String selection, String[] selectionArgs, String groupBy,
+                        String having, String orderBy, String limit) {
+        return delegate.query(distinct, table, columns,
+                selection, selectionArgs, groupBy,
+                having, orderBy, limit);
+    }
+
+    public Cursor query(String table, String[] columns, String selection,
+                        String[] selectionArgs, String groupBy, String having,
+                        String orderBy) {
+        return delegate.query(table, columns, selection,
+                selectionArgs, groupBy, having,
+                orderBy);
+    }
+
+    public long insert(String table, String nullColumnHack, ContentValues values) {
+        return delegate.insert(table, nullColumnHack, values);
+    }
+
+    public long insertOrThrow(String table, String nullColumnHack, ContentValues values) {
+        return delegate.insertOrThrow(table, nullColumnHack, values);
+    }
+
+    public long replace(String table, String nullColumnHack, ContentValues initialValues) {
+        return delegate.replace(table, nullColumnHack, initialValues);
+    }
+
+    public long replaceOrThrow(String table, String nullColumnHack,
+                               ContentValues initialValues) throws SQLException {
+        return delegate.replaceOrThrow(table, nullColumnHack,
+                initialValues);
+    }
+
+    public long insertWithOnConflict(String table, String nullColumnHack,
+                                     ContentValues initialValues, int conflictAlgorithm) {
+        return delegate.insertWithOnConflict(table, nullColumnHack,
+                initialValues, conflictAlgorithm);
+    }
+
+    public int delete(String table, String whereClause, String[] whereArgs) {
+        return delegate.delete(table, whereClause, whereArgs);
+    }
+
+    public boolean isOpen() {
+        return delegate.isOpen();
+    }
+
+    public boolean needUpgrade(int newVersion) {
+        return delegate.needUpgrade(newVersion);
+    }
+
+    public String getPath() {
+        return delegate.getPath();
+    }
+
+    public void setLocale(Locale locale) {
+        delegate.setLocale(locale);
+    }
+
+    public void setMaxSqlCacheSize(int cacheSize) {
+        delegate.setMaxSqlCacheSize(cacheSize);
     }
 }

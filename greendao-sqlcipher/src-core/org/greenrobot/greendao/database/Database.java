@@ -15,8 +15,11 @@
  */
 package org.greenrobot.greendao.database;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
+
+import java.util.Locale;
 
 /**
  * Database abstraction used internally by greenDAO.
@@ -43,4 +46,56 @@ public interface Database {
     void close();
 
     Object getRawDatabase();
+
+    int update(String table, ContentValues values, String whereClause, String[] whereArgs);
+
+    int updateWithOnConflict(String table, ContentValues values,
+                             String whereClause, String[] whereArgs, int conflictAlgorithm);
+
+    boolean isReadOnly();
+
+    void yieldIfContendedSafely();
+
+    boolean yieldIfContendedSafely(long sleepAfterYieldDelay);
+
+    long getMaximumSize();
+
+    long setMaximumSize(long numBytes);
+
+    long getPageSize();
+
+    void setPageSize(long numBytes);
+
+    Cursor query(boolean distinct, String table, String[] columns,
+                 String selection, String[] selectionArgs, String groupBy,
+                 String having, String orderBy, String limit);
+
+    Cursor query(String table, String[] columns, String selection,
+                 String[] selectionArgs, String groupBy, String having,
+                 String orderBy);
+
+    long insert(String table, String nullColumnHack, ContentValues values);
+
+    long insertOrThrow(String table, String nullColumnHack, ContentValues values);
+
+    long replace(String table, String nullColumnHack, ContentValues initialValues);
+
+    long replaceOrThrow(String table, String nullColumnHack,
+                        ContentValues initialValues) throws SQLException;
+
+    long insertWithOnConflict(String table, String nullColumnHack,
+                              ContentValues initialValues, int conflictAlgorithm);
+
+    int delete(String table, String whereClause, String[] whereArgs);
+
+    boolean isOpen();
+
+    boolean needUpgrade(int newVersion);
+
+    String getPath();
+
+    void setLocale(Locale locale);
+
+    void setMaxSqlCacheSize(int cacheSize);
+
 }
