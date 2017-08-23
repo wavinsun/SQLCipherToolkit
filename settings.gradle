@@ -1,1 +1,1 @@
-include ':app', ':sqlcipher-toolkit', ':sqlcipher-droid-ext'
+include ':app', ':sqlcipher-toolkit', ':sqlcipher-droid-ext', ':greendao-sqlcipher'
