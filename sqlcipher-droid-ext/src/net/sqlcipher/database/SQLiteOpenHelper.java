@@ -170,7 +170,11 @@ public abstract class SQLiteOpenHelper {
                     if (version == 0) {
                         onCreate(db);
                     } else {
-                        onUpgrade(db, version, mNewVersion);
+                        if (version > mNewVersion) {
+                            onDowngrade(db, version, mNewVersion);
+                        } else {
+                            onUpgrade(db, version, mNewVersion);
+                        }
                     }
                     db.setVersion(mNewVersion);
                     db.setTransactionSuccessful();
@@ -298,6 +302,27 @@ public abstract class SQLiteOpenHelper {
      * @param newVersion The new database version.
      */
     public abstract void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
+
+    /**
+     * Called when the database needs to be downgraded. This is strictly similar to
+     * {@link #onUpgrade} method, but is called whenever current version is newer than requested one.
+     * However, this method is not abstract, so it is not mandatory for a customer to
+     * implement it. If not overridden, default implementation will reject downgrade and
+     * throws SQLiteException
+     *
+     * <p>
+     * This method executes within a transaction.  If an exception is thrown, all changes
+     * will automatically be rolled back.
+     * </p>
+     *
+     * @param db The database.
+     * @param oldVersion The old database version.
+     * @param newVersion The new database version.
+     */
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        throw new SQLiteException("Can't downgrade database from version " +
+                oldVersion + " to " + newVersion);
+    }
 
     /**
      * Called when the database has been opened.
