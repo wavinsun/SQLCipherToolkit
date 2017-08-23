@@ -1,11 +1,5 @@
 apply plugin: 'maven'
 
-import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
-
-artifacts{
-    archives new DefaultPublishArtifact("sqlcipher-droid", "aar", "aar", null, new Date(), new File("build/classes.aar"))
-}
-
 uploadArchives {
     repositories.mavenDeployer {
         name = 'mavenCentralReleaseDeployer'
@@ -16,8 +10,8 @@ uploadArchives {
             artifact.name == "sqlcipher-droid"
         }
         pom("sqlcipher-droid").packaging = 'aar'
-        pom("sqlcipher-droid").groupId = "cn.mutils.app"
+        pom("sqlcipher-droid").groupId = "com.autonavi.amap"
         pom("sqlcipher-droid").artifactId = "sqlcipher-droid"
-        pom("sqlcipher-droid").version = "3.5.4.1"
+        pom("sqlcipher-droid").version = "3.5.4.2"
     }
 }
